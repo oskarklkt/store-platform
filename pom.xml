@@ -18,6 +18,7 @@
     </parent>
 
     <modules>
+        <module>inventory</module>
         <module>catalog</module>
     </modules>
 

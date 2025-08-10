@@ -69,22 +69,22 @@ catalog/src/main/resources/products.csv
 
 ### 3. run services
 
-# Registry (Eureka)
+## Registry (Eureka)
 mvn -pl registry spring-boot:run
 
-# Config Server
+## Config Server
 mvn -pl config-server spring-boot:run
 
-# Catalog
+## Catalog
 mvn -pl catalog spring-boot:run
 
-# Inventory
+## Inventory
 mvn -pl inventory spring-boot:run
 
-# Product
+## Product
 mvn -pl product spring-boot:run
 
-# Gateway
+## Gateway
 mvn -pl gateway spring-boot:run
 
 ---
