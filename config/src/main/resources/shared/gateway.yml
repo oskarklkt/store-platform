@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: product_service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/v1/product/**
+        - id: products_service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/v1/products/**
+        - id: catalog_service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/v1/catalog/**
+        - id: inventory_service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/v1/availability/**

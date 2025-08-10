@@ -20,6 +20,10 @@
     <modules>
         <module>inventory</module>
         <module>catalog</module>
+        <module>product</module>
+        <module>config</module>
+        <module>registry</module>
+        <module>gateway</module>
     </modules>
 
     <properties>

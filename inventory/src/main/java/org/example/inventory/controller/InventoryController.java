@@ -6,17 +6,19 @@ import org.example.inventory.dto.AvailabilityDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController("/api")
+@RestController
+@RequestMapping("/v1")
 @RequiredArgsConstructor
 public class InventoryController {
 
     private final InventoryService inventoryService;
 
-    @GetMapping("/v1/availability")
+    @GetMapping("/availability")
     public ResponseEntity<List<AvailabilityDto>> getAvailability(@RequestBody List<String> uniqIds) {
         List<AvailabilityDto> availabilities = uniqIds.stream()
                 .filter(uniqId -> inventoryService.getAvailabilities().containsKey(uniqId))

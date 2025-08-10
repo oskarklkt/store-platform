@@ -7,17 +7,19 @@ import org.example.catalog.service.CatalogService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController("/api")
+@RestController
+@RequestMapping("/v1/catalog")
 @RequiredArgsConstructor
 public class CatalogController {
 
     private final CatalogService catalogService;
 
-    @GetMapping("/v1/product/{id}")
+    @GetMapping("/product/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable String id) {
         ProductDto product = catalogService.getByUniqueId(id)
                 .orElseThrow(() -> new NoSuchElementException(id));
@@ -25,7 +27,7 @@ public class CatalogController {
         return ResponseEntity.ok(product);
     }
 
-    @GetMapping("/v1/products/{sku}")
+    @GetMapping("/products/{sku}")
     public ResponseEntity<List<ProductDto>> getProductsBySku(@PathVariable String sku) {
         List<ProductDto> products = catalogService.getBySku(sku);
         return ResponseEntity.ok(products);
