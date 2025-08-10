@@ -87,5 +87,16 @@ mvn -pl product spring-boot:run
 # Gateway
 mvn -pl gateway spring-boot:run
 
+---
+
+# Endpoints
+
+## Catalog Service
+
+GET api/v1/products/{sku} - get all products with given sku
+returns 200 ok with body
+
+GET api/v1/product/{uniq_id} - get product with given uniq_id
+returns 200 ok with body or 404 when not found
 
 
