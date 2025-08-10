@@ -99,4 +99,53 @@ returns 200 ok with body
 GET api/v1/product/{uniq_id} - get product with given uniq_id
 returns 200 ok with body or 404 when not found
 
+## Inventory Service
 
+GET api/v1/availability
+
+request:
+Content-Type: application/json
+
+takes list of products' uniqIds and returns their availability, 
+
+### sample request:
+
+[
+
+"b6c0b6bea69c722939585baeac73c13d",
+
+"93e5272c51d8cce02597e3ce67b7ad0a",
+
+"013e320f2f2ec0cf5b3ff5418d688528"
+
+]
+
+### sample response:
+
+HTTP/1.1 200
+
+Content-Type: application/json
+
+Transfer-Encoding: chunked
+
+Date: Sun, 10 Aug 2025 17:31:38 GMT
+
+
+[
+
+{
+"uniqId": "b6c0b6bea69c722939585baeac73c13d",
+"available": 6
+},
+
+{
+"uniqId": "93e5272c51d8cce02597e3ce67b7ad0a",
+"available": 21
+},
+
+{
+"uniqId": "013e320f2f2ec0cf5b3ff5418d688528",
+"available": 18
+}
+
+]
