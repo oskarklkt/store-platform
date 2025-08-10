@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class ProductRaw {
+public class ProductRawDto {
     @JsonProperty("uniq_id")
     private String uniqId;
     private String sku;
