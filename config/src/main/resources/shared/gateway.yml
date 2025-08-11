@@ -21,6 +21,3 @@ spring:
           uri: http://localhost:8082
           predicates:
             - Path=/v1/availability/**
-      discovery:
-        locator:
-          enabled: true
