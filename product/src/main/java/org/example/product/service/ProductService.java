@@ -1,5 +1,7 @@
 package org.example.product.service;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import org.example.product.clients.CatalogClient;
 import org.example.product.clients.InventoryClient;
@@ -8,6 +10,7 @@ import org.example.product.dto.AvailableProductDto;
 import org.example.product.dto.ProductDto;
 import org.example.product.exception.ProductNotAvailableException;
 import org.example.product.mapper.AvailableProductMapper;
+import org.example.product.exception.DependentServiceUnavailableException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -23,25 +26,23 @@ public class ProductService {
     private final CatalogClient catalogClient;
     private final AvailableProductMapper availableProductMapper;
 
+    @CircuitBreaker(name = "product-by-id", fallbackMethod = "fallbackById")
+    @Retry(name = "product-by-id")
     public AvailableProductDto getAvailableProductByUniqueId(String uniqueId) {
-        AvailabilityDto availabilityDto = inventoryClient
-                .getAvailability(Collections.singletonList(uniqueId)).getFirst();
-
+        AvailabilityDto availabilityDto =
+                inventoryClient.getAvailability(Collections.singletonList(uniqueId)).getFirst();
         if (availabilityDto.getAvailable() == 0) {
             throw new ProductNotAvailableException(uniqueId);
         }
-
         ProductDto productDto = catalogClient.getProductById(uniqueId);
-
         return availableProductMapper.toAvailableProduct(productDto, availabilityDto);
-
     }
 
+    @CircuitBreaker(name = "products-by-sku", fallbackMethod = "fallbackBySku")
+    @Retry(name = "products-by-sku")
     public List<AvailableProductDto> getAvailableProductsBySku(String sku) {
         List<ProductDto> products = catalogClient.getProductsBySku(sku);
-
         List<String> ids = products.stream().map(ProductDto::getUniqId).toList();
-
         List<AvailabilityDto> availabilities = inventoryClient.getAvailability(ids);
 
         Map<String, AvailabilityDto> availabilityMap = availabilities.stream()
@@ -57,6 +58,13 @@ public class ProductService {
                 .filter(Objects::nonNull)
                 .filter(dto -> dto.getAvailable() != null && dto.getAvailable() > 0)
                 .toList();
+    }
 
+    private AvailableProductDto fallbackById(String uniqueId, Throwable ex) {
+        throw new DependentServiceUnavailableException("Dependent service unavailable (id=%s)".formatted(uniqueId), ex);
+    }
+
+    private List<AvailableProductDto> fallbackBySku(String sku, Throwable ex) {
+        throw new DependentServiceUnavailableException("Dependent service unavailable (sku=%s)".formatted(sku), ex);
     }
 }

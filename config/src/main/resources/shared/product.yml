@@ -8,3 +8,97 @@ feign:
         connectTimeout: 2000
         readTimeout: 3000
         loggerLevel: BASIC
+
+
+spring:
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: false
+      client:
+        config:
+          catalog:
+            connectTimeout: 1500
+            readTimeout: 2000
+          inventory:
+            connectTimeout: 1500
+            readTimeout: 2000
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      products-by-sku:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        slowCallDurationThreshold: 1500ms
+        slowCallRateThreshold: 50
+        waitDurationInOpenState: 8s
+        permittedNumberOfCallsInHalfOpenState: 5
+        recordExceptions:
+          - java.util.concurrent.TimeoutException
+          - java.net.SocketTimeoutException
+          - feign.RetryableException
+          - feign.FeignException$InternalServerError
+          - feign.FeignException$ServiceUnavailable
+          - feign.FeignException$BadGateway
+          - feign.FeignException$GatewayTimeout
+      product-by-id:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        slowCallDurationThreshold: 1500ms
+        slowCallRateThreshold: 50
+        waitDurationInOpenState: 8s
+        permittedNumberOfCallsInHalfOpenState: 5
+        recordExceptions:
+          - java.util.concurrent.TimeoutException
+          - java.net.SocketTimeoutException
+          - feign.RetryableException
+          - feign.FeignException$InternalServerError
+          - feign.FeignException$ServiceUnavailable
+          - feign.FeignException$BadGateway
+          - feign.FeignException$GatewayTimeout
+
+  retry:
+    instances:
+      products-by-sku:
+        maxAttempts: 3
+        waitDuration: 200ms
+        retryExceptions:
+          - feign.RetryableException
+          - java.net.SocketTimeoutException
+          - java.util.concurrent.TimeoutException
+          - feign.FeignException$InternalServerError
+          - feign.FeignException$BadGateway
+          - feign.FeignException$ServiceUnavailable
+          - feign.FeignException$GatewayTimeout
+        ignoreExceptions:
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+      product-by-id:
+        maxAttempts: 3
+        waitDuration: 200ms
+        retryExceptions:
+          - feign.RetryableException
+          - java.net.SocketTimeoutException
+          - java.util.concurrent.TimeoutException
+          - feign.FeignException$InternalServerError
+          - feign.FeignException$BadGateway
+          - feign.FeignException$ServiceUnavailable
+          - feign.FeignException$GatewayTimeout
+        ignoreExceptions:
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+
+
+
+logging:
+  level:
+    io.github.resilience4j.circuitbreaker: DEBUG
+    io.github.resilience4j.timelimiter: DEBUG
+    io.github.resilience4j.retry: DEBUG
+    org.springframework.cloud.circuitbreaker: DEBUG
+    feign: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+    org.example.product.clients: DEBUG

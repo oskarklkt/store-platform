@@ -1,2 +1,6 @@
 server:
   port: 8081
+
+demo:
+  latencyMs: 0
+  failPercent: 99

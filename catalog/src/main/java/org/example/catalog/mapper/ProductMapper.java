@@ -81,7 +81,8 @@ public interface ProductMapper {
             var arr = root.get("review");
             if (arr != null && arr.isArray()) {
                 List<String> out = new ArrayList<>();
-                arr.forEach(node -> node.fields().forEachRemaining(e -> out.add(e.getValue().asText())));
+                arr.forEach(node -> node.fields().forEachRemaining(e ->
+                        out.add(e.getValue().asText())));
                 return out;
             }
         } catch (Exception ignore) {

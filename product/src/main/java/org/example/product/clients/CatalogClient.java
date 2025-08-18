@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(
-        name = "catalog",
-        path = "/v1/catalog"
-)
+@FeignClient(name = "catalog", path = "/v1/catalog")
 public interface CatalogClient {
 
     @GetMapping("/product/{id}")

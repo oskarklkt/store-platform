@@ -11,6 +11,19 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(DependentServiceUnavailableException.class)
+    public ResponseEntity<ApiException> handleDependentDown(DependentServiceUnavailableException ex,
+                                                            HttpServletRequest request) {
+        ApiException error = new ApiException(
+                LocalDateTime.now(),
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
+    }
+
     @ExceptionHandler(ProductNotAvailableException.class)
     public ResponseEntity<ApiException> handleNoSuchElement(ProductNotAvailableException ex,
                                                             HttpServletRequest request) {
@@ -24,3 +37,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }
+
